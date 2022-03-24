@@ -37,6 +37,7 @@ jobs:
       # build the image
       - run: docker build -t app .
       - run: python3 --version
+      - run: ls
       - run: python3 -m pylint .\pokemon_parser.py
       - run: python3 -m coverage run -m unittest discover tests "*_Test.py"
       - run: python3 -m coverage report --omit=tests/* --fail-under=80
