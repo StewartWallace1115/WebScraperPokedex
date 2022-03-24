@@ -1,6 +1,6 @@
 import unittest
 import json
-from PokemonParser import PokemonParser
+from pokemon_parser import PokemonParser
 
 Pokemon_data = """{
   "id": 35,
@@ -301,7 +301,7 @@ class Parser_Test(unittest.TestCase):
 
     def test_deleteUnnecessaryProperties(self):
         pokemon_data_json = json.loads(Pokemon_data)
-        PokemonParser.removeUnnecessaryProperties(pokemon_data_json)
+        PokemonParser.remove_unnecessary_properties(pokemon_data_json)
 
         self.assertFalse( "base_experience" in pokemon_data_json)
         self.assertFalse( "is_default" in pokemon_data_json)
@@ -314,7 +314,7 @@ class Parser_Test(unittest.TestCase):
     
     def test_deleteUnnecessaryProperties_keepNeccessaryProperties(self):
         pokemon_data_json = json.loads(Pokemon_data)
-        PokemonParser.removeUnnecessaryProperties(pokemon_data_json)
+        PokemonParser.remove_unnecessary_properties(pokemon_data_json)
 
         self.assertTrue( "id" in pokemon_data_json)
         self.assertTrue( "name" in pokemon_data_json)
@@ -330,7 +330,7 @@ class Parser_Test(unittest.TestCase):
 
     def test_useFirstAbilityOnly(self):
         pokemon_data_json = json.loads(Pokemon_data)
-        PokemonParser.useFirstAbilityOnly(pokemon_data_json)
+        PokemonParser.use_first_ability_only(pokemon_data_json)
 
         self.assertFalse( "abilities" in pokemon_data_json)
         self.assertTrue( "ability" in pokemon_data_json)
