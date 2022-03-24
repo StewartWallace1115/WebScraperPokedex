@@ -336,5 +336,16 @@ class Parser_Test(unittest.TestCase):
         self.assertTrue( "ability" in pokemon_data_json)
         self.assertEquals(pokemon_data_json["ability"], "friend-guard")
 
+    def test_seperateMovesetFromPokemonData(self):
+        pokemon_data_json = json.loads(Pokemon_data)
+        moveset_dicionary = {}
+        PokemonParser.seperate_moveset_from_pokemon_data(pokemon_data_json, moveset_dicionary)
+
+        move = moveset_dicionary["clefairy"][0]['move']['name']
+        self.assertFalse( "moves" in pokemon_data_json)
+        self.assertTrue( "clefairy" in moveset_dicionary)
+        self.assertEquals(move, "pound")
+
+
 if __name__ == '__main__':
     unittest.main()

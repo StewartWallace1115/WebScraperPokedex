@@ -32,3 +32,16 @@ class PokemonParser:
 
         # Remove abilites property since there is only one ability
         del pokemon_data["abilities"]
+
+    @staticmethod
+    def seperate_moveset_from_pokemon_data(pokemon_data, moveset_dictionary):
+
+        """
+        Append moveset of a pokemon to moveset dictionary. Remove moves from the pokemon data
+        """
+
+        moveset_dictionary[pokemon_data["name"]] = pokemon_data["moves"]
+
+        # Remove abilites property since there is only one ability
+        del pokemon_data["moves"]
+       
