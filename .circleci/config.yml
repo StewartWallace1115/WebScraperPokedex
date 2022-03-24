@@ -38,6 +38,8 @@ jobs:
       - run: python3 -m coverage run -m unittest discover tests "*_Test.py"
       - run: python3 -m coverage report --omit=tests/* --fail-under=80
       - run: python3 -m coverage xml --omit=tests/* --fail-under=80  
+      - store_test_results:
+          path: ~/
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
