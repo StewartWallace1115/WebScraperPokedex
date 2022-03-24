@@ -34,6 +34,7 @@ jobs:
       # build the image
       - run: docker build -t app .
       - run: python3 --version
+      - run: python3 -m unittest discover tests "*_Test.py"   
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
