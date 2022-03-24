@@ -27,14 +27,22 @@ jobs:
     # Here we're making sure we use just use the system-wide pip. By default it uses the project root's requirements.txt.
     # Then run your tests!
     # CircleCI will report the results back to your VCS provider.
+   
     steps:
       - checkout
+      - run: python3 -m pip install -r requirements.txt
+      - run: python3 -m pip install pylint
       - setup_remote_docker:
           version: 20.10.12
       # build the image
       - run: docker build -t app .
       - run: python3 --version
-      - run: python3 -m unittest discover tests "*_Test.py"   
+      - run: python3 -m pylint --fail-under=7 pokemon_parser.py
+      - run: python3 -m coverage run -m unittest discover tests "*_Test.py"
+      - run: python3 -m coverage report --omit=tests/* --fail-under=80
+      - run: python3 -m coverage xml --omit=tests/* --fail-under=80  
+      - store_test_results:
+          path: ~/
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
