@@ -301,6 +301,7 @@ class Parser_Test(unittest.TestCase):
 
     def test_deleteUnnecessaryProperties(self):
         pokemon_data_json = json.loads(Pokemon_data)
+        
         PokemonParser.remove_unnecessary_properties(pokemon_data_json)
 
         self.assertFalse( "base_experience" in pokemon_data_json)
@@ -346,6 +347,26 @@ class Parser_Test(unittest.TestCase):
         self.assertTrue( "clefairy" in moveset_dicionary)
         self.assertEquals(move, "pound")
 
+    def test_parse(self):
+        pokemon_data_json = json.loads(Pokemon_data)
+        moveset_dicionary = {}
+        pokemon_parser = PokemonParser()
+        pokemon_parser.parse(pokemon_data_json, moveset_dicionary)
+
+        move = moveset_dicionary["clefairy"][0]['move']['name']
+        self.assertFalse( "moves" in pokemon_data_json)
+        self.assertTrue( "clefairy" in moveset_dicionary)
+        self.assertEquals(move, "pound")
+        self.assertFalse( "abilities" in pokemon_data_json)
+        self.assertTrue( "ability" in pokemon_data_json)
+        self.assertEquals(pokemon_data_json["ability"], "friend-guard")
+        self.assertFalse( "base_experience" in pokemon_data_json)
+        self.assertFalse( "is_default" in pokemon_data_json)
+        self.assertFalse( "order" in pokemon_data_json)
+        self.assertFalse( "game_indices" in pokemon_data_json)
+        self.assertFalse( "held_items" in pokemon_data_json)
+        self.assertFalse( "location_area_encounters" in pokemon_data_json)
+        self.assertFalse( "past_types" in pokemon_data_json)
 
 if __name__ == '__main__':
     unittest.main()
