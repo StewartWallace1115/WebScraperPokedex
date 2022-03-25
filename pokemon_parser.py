@@ -5,8 +5,19 @@ class PokemonParser:
     """
     Parses JSON file from PokeAPI Pokemon endpoint
     """
-    @staticmethod
-    def remove_unnecessary_properties(pokemon_data):
+
+    def parse(self, pokemon_json, moveset_dictionary):
+
+        """
+        Parse pokemon json to remove unnecessary data and extract moves set
+        """
+
+        self.remove_unnecessary_properties(pokemon_json)
+        self.use_first_ability_only(pokemon_json)
+        self.seperate_moveset_from_pokemon_data(pokemon_json, moveset_dictionary)
+
+    @classmethod
+    def remove_unnecessary_properties(cls, pokemon_data):
 
         """
         Removes properties not necessary to download from the JSON file
@@ -18,8 +29,8 @@ class PokemonParser:
         for element in unnecessary_properties:
             del pokemon_data[element]
 
-    @staticmethod
-    def use_first_ability_only(pokemon_data):
+    @classmethod
+    def use_first_ability_only(cls, pokemon_data):
 
         """
         Only use the first ability
@@ -33,8 +44,8 @@ class PokemonParser:
         # Remove abilites property since there is only one ability
         del pokemon_data["abilities"]
 
-    @staticmethod
-    def seperate_moveset_from_pokemon_data(pokemon_data, moveset_dictionary):
+    @classmethod
+    def seperate_moveset_from_pokemon_data(cls,pokemon_data, moveset_dictionary):
 
         """
         Append moveset of a pokemon to moveset dictionary. Remove moves from the pokemon data
