@@ -1,6 +1,6 @@
 import unittest
 import json
-from pokemon_downloader import PokemonDownloader
+from src.pokemon_downloader import PokemonDownloader
 
 
 class Pokemon_Downloader_Test(unittest.TestCase):
