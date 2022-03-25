@@ -3,7 +3,7 @@ Downloads file from Poke API
 """
 
 import requests
-from pokemon_parser import PokemonParser
+from src.pokemon_parser import PokemonParser
 
 class PokemonDownloader:
     """

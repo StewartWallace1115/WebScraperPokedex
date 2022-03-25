@@ -1,6 +1,7 @@
 import unittest
 import json
-from pokemon_parser import PokemonParser
+
+from src.pokemon_parser import PokemonParser
 
 Pokemon_data = """{
   "id": 35,
