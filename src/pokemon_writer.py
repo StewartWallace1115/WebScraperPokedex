@@ -13,15 +13,18 @@ class PokemonWriter:
         Create SQL file from pokemon data
         """
 
-        pokemon_columns = [("pokemon_name", "varchar"),("id", "int"),  ("height", "varchar"),\
+        pokemon_columns_types = [("name", "varchar"),("id", "int"),  ("height", "varchar"),\
                         ("weight", "int"),("ability", "varchar"),("species", "varchar"),\
-                        ("stats", "varchar"),("primary_type", "varchar"),\
+                        ("primary_type", "varchar"),\
                         ("secondary_type", "varchar")]
+        pokemon_columns = ["name", "id","height", "weight", "ability", "species",  \
+                          "primary_type", "secondary_type"]
         table_name = "Pokemon"
-        primary_key = "pokemon_name"
-        sql_pokemon_creation = cls.create_table(table_name, pokemon_columns)
+        primary_key = "name"
+        sql_pokemon_creation = cls.create_table(table_name, pokemon_columns_types)
         sql_pokemon_creation = cls.create_primary_key(primary_key,table_name,sql_pokemon_creation)
-        sql_pokemon_creation = cls.populate_table(pokemon_json, table_name, sql_pokemon_creation)
+        sql_pokemon_creation = cls.populate_table(pokemon_json, table_name,
+                                sql_pokemon_creation, pokemon_columns)
         return sql_pokemon_creation
 
     @classmethod
@@ -81,28 +84,28 @@ class PokemonWriter:
         return sql_creation_string
 
     @classmethod
-    def populate_table(cls, pokemon_json, table_name, sql_creation_string):
+    def populate_table(cls, pokemon_json, table_name, sql_creation_string, columns):
         """
-        Populate SQL table using values only
+        Populate SQL table using values and keys
         """
 
         value_string = "("
-        value_index = 1
 
-        for element in pokemon_json.items():
-            value = element[value_index]
+        for element in columns:
 
+            value = pokemon_json[element]
             if not isinstance(value, str):
                 value = str(value)
+            else:
+                value = "\'" + value + "\'"
 
-            value = value.strip()
             value_string = value_string + value +", "
+
 
         value_string = cls.remove_last_comma(value_string, True)
 
-        value_string = value_string + ");"
         sql_creation_string = sql_creation_string + "INSERT INTO "+ table_name +\
-                             " VALUES " + value_string
+                             " VALUES " + value_string + ");"
 
         return sql_creation_string
 
