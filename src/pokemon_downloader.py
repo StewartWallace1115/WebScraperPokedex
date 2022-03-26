@@ -32,7 +32,7 @@ class PokemonDownloader:
         pokemon_json = requests.get(pokemon_url + "//" + str(number)).json()
         species_json = requests.get(species_url + "//" + str(number)).json()
 
-        pokemon_parser.parse(pokemon_json, species_json, moveset_dicionary, sprites_dictionary, \
+        stats = pokemon_parser.parse(pokemon_json, species_json, moveset_dicionary, sprites_dictionary, \
                             stats_dictionary)
 
-        return pokemon_json,moveset_dicionary
+        return pokemon_json,moveset_dicionary,stats

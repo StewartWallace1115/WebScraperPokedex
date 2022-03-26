@@ -1,6 +1,9 @@
 """
 Parses JSON file from PokeAPI
 """
+from numpy import copy
+
+
 class PokemonParser:
     """
     Parses JSON file from PokeAPI Pokemon endpoint
@@ -18,7 +21,8 @@ class PokemonParser:
         self.seperate_data_from_pokemon_data(pokemon_json, spirites_dictionary, "sprites")
         self.english_species_property(species_json, pokemon_json)
         self.types(pokemon_json)
-        self.extract_stats(pokemon_json,pokemon_stats)
+        stats = self.extract_stats(pokemon_json,pokemon_stats)
+        return stats
 
 
     @classmethod
@@ -99,7 +103,11 @@ class PokemonParser:
         """
         cls.seperate_data_from_pokemon_data(pokemon_data,pokemon_stats,"stats")
         pokemon_current_stats = pokemon_stats[pokemon_data["name"]]
+        pokemon_new_stats = {}
+        pokemon_new_stats["name"] = pokemon_data["name"]
         for stat in pokemon_current_stats:
-            stat_name = stat["stat"]
-            stat["name"] = stat_name["name"]
-            del stat["stat"]
+            stat_name = stat["stat"]["name"]
+            pokemon_new_stats[stat_name] = stat["base_stat"]
+ 
+        return pokemon_new_stats
+        

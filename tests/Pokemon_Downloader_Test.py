@@ -13,7 +13,7 @@ class Pokemon_Downloader_Test(unittest.TestCase):
         species_url = "https://pokeapi.co/api/v2/pokemon-species"
         number = 1
         pokemon_downloader = PokemonDownloader()
-        pokemon_json, moveset_dicionary = pokemon_downloader.download_pokemon(pokemon_url, species_url, number)
+        pokemon_json, moveset_dicionary, stat_dictionary = pokemon_downloader.download_pokemon(pokemon_url, species_url, number)
         move = moveset_dicionary["bulbasaur"][0]['move']['name']
 
         self.assertFalse( "moves" in pokemon_json)
