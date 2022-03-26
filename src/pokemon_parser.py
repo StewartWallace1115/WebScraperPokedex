@@ -6,7 +6,7 @@ class PokemonParser:
     Parses JSON file from PokeAPI Pokemon endpoint
     """
 
-    def parse(self, pokemon_json, moveset_dictionary, spirites_dictionary):
+    def parse(self, pokemon_json, species_json, moveset_dictionary, spirites_dictionary,pokemon_stats):
 
         """
         Parse pokemon json to remove unnecessary data and extract moves set
@@ -16,6 +16,9 @@ class PokemonParser:
         self.use_first_ability_only(pokemon_json)
         self.seperate_data_from_pokemon_data(pokemon_json, moveset_dictionary, "moves")
         self.seperate_data_from_pokemon_data(pokemon_json, spirites_dictionary, "sprites")
+        self.english_species_property(species_json, pokemon_json)
+        self.types(pokemon_json)
+        self.extract_stats(pokemon_json,pokemon_stats)
 
 
     @classmethod
@@ -26,7 +29,7 @@ class PokemonParser:
         """
 
         unnecessary_properties = ["base_experience", "is_default", "order","game_indices",
-                                 "held_items", "location_area_encounters", "past_types"]
+                                 "held_items", "location_area_encounters", "past_types", "forms"]
 
         for element in unnecessary_properties:
             del pokemon_data[element]
@@ -57,4 +60,46 @@ class PokemonParser:
 
         del pokemon_data[data_property]
 
-       
+    @classmethod
+    def english_species_property(cls, pokemon_species, pokemon_data):
+        """
+        Replace species with English species property
+        """
+
+        english = "en"
+        genera_data = pokemon_species["genera"]
+        genus = "none"
+        for element in genera_data:
+            if element["language"]["name"] == english:
+                genus = element["genus"]
+                break
+
+        pokemon_data["species"] = genus
+
+    @classmethod
+    def types(cls, pokemon_data):
+        """
+        Replace types with two properties
+        """
+
+        types = pokemon_data["types"]
+        pokemon_data["primary_type"] = types[0]["type"]["name"]
+
+        if len(types) == 2:
+            pokemon_data["secondary_type"] = types[1]["type"]["name"]
+        else:
+            pokemon_data["secondary_type"] = "none"
+
+        del pokemon_data["types"]
+
+    @classmethod
+    def extract_stats(cls, pokemon_data, pokemon_stats):
+        """
+        Replace types with two properties
+        """
+        cls.seperate_data_from_pokemon_data(pokemon_data,pokemon_stats,"stats")
+        pokemon_current_stats = pokemon_stats[pokemon_data["name"]]
+        for stat in pokemon_current_stats:
+            stat_name = stat["stat"]
+            stat["name"] = stat_name["name"]
+            del stat["stat"]
