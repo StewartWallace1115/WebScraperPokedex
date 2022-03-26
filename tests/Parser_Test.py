@@ -341,18 +341,30 @@ class Parser_Test(unittest.TestCase):
     def test_seperateMovesetFromPokemonData(self):
         pokemon_data_json = json.loads(Pokemon_data)
         moveset_dicionary = {}
-        PokemonParser.seperate_moveset_from_pokemon_data(pokemon_data_json, moveset_dicionary)
+        PokemonParser.seperate_data_from_pokemon_data(pokemon_data_json, moveset_dicionary, "moves")
 
         move = moveset_dicionary["clefairy"][0]['move']['name']
         self.assertFalse( "moves" in pokemon_data_json)
         self.assertTrue( "clefairy" in moveset_dicionary)
         self.assertEquals(move, "pound")
 
+        
+    def test_seperateSpritesFromPokemonData(self):
+        pokemon_data_json = json.loads(Pokemon_data)
+        spirites_dictionary = {}
+        PokemonParser.seperate_data_from_pokemon_data(pokemon_data_json, spirites_dictionary, "sprites")
+
+        clefairy_spirities = spirites_dictionary["clefairy"]
+        self.assertFalse( "sprites" in pokemon_data_json)
+        self.assertTrue( "clefairy" in spirites_dictionary)
+        self.assertTrue("back_default" in clefairy_spirities)
+
     def test_parse(self):
         pokemon_data_json = json.loads(Pokemon_data)
         moveset_dicionary = {}
+        spirites_dictionary = {}
         pokemon_parser = PokemonParser()
-        pokemon_parser.parse(pokemon_data_json, moveset_dicionary)
+        pokemon_parser.parse(pokemon_data_json, moveset_dicionary, spirites_dictionary)
 
         move = moveset_dicionary["clefairy"][0]['move']['name']
         self.assertFalse( "moves" in pokemon_data_json)
