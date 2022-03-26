@@ -6,7 +6,7 @@ class PokemonParser:
     Parses JSON file from PokeAPI Pokemon endpoint
     """
 
-    def parse(self, pokemon_json, species_json, moveset_dictionary, spirites_dictionary,pokemon_stats):
+    def parse(self, pokemon_json, species_json, moveset_dictionary, spirites_dictionary, pokemon_stats):
 
         """
         Parse pokemon json to remove unnecessary data and extract moves set
