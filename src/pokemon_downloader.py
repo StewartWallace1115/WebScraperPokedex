@@ -19,17 +19,20 @@ class PokemonDownloader:
         return moveset_dictionary
 
     @classmethod
-    def download_pokemon(cls, url, number):
+    def download_pokemon(cls, pokemon_url, species_url, number):
 
         """
         Downloads and parses one pokemon
         """
 
-        response = requests.get(url + "//" + str(number))
         moveset_dicionary = {}
         sprites_dictionary = {}
-        pokemon_json = response.json()
+        stats_dictionary = {}
         pokemon_parser = PokemonParser()
-        pokemon_parser.parse(pokemon_json, moveset_dicionary,sprites_dictionary)
+        pokemon_json = requests.get(pokemon_url + "//" + str(number)).json()
+        species_json = requests.get(species_url + "//" + str(number)).json()
+
+        pokemon_parser.parse(pokemon_json, species_json, moveset_dicionary, sprites_dictionary, \
+                            stats_dictionary)
 
         return pokemon_json,moveset_dicionary
