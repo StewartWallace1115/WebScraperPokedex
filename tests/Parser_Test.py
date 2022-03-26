@@ -15426,25 +15426,17 @@ class Parser_Test(unittest.TestCase):
     def test_extractStat(self):
         pokemon_data_json = json.loads(Pokemon_data_bulbasaur)
         stat = {}
-        PokemonParser.extract_stats(pokemon_data_json, stat)
-
-        # Order is not guarnateed for array. Have to use property name. Avoid loop to avoid logic in test code.
-        # Maybe use list instead?
-        stat0 = stat["bulbasaur"][0]["name"]
-        stat1 = stat["bulbasaur"][1]["name"]
-        stat2 = stat["bulbasaur"][2]["name"]
-        stat3 = stat["bulbasaur"][3]["name"]
-        stat4 = stat["bulbasaur"][4]["name"]
-        stat5 = stat["bulbasaur"][5]["name"]
+        stat = PokemonParser.extract_stats(pokemon_data_json, stat)
 
         bulbasaur_base_stat = {"hp":45, "attack":49, "defense": 49, "special-attack":65,  "special-defense":65, "speed": 45}
 
-        self.assertEqual(stat["bulbasaur"][0]["base_stat"], bulbasaur_base_stat[stat0])
-        self.assertEqual(stat["bulbasaur"][1]["base_stat"], bulbasaur_base_stat[stat1])
-        self.assertEqual(stat["bulbasaur"][2]["base_stat"], bulbasaur_base_stat[stat2])
-        self.assertEqual(stat["bulbasaur"][3]["base_stat"], bulbasaur_base_stat[stat3])
-        self.assertEqual(stat["bulbasaur"][4]["base_stat"], bulbasaur_base_stat[stat4])
-        self.assertEqual(stat["bulbasaur"][5]["base_stat"], bulbasaur_base_stat[stat5])
+        self.assertEqual(stat["hp"], bulbasaur_base_stat["hp"])
+        self.assertEqual(stat["attack"], bulbasaur_base_stat["attack"])
+        self.assertEqual(stat["defense"], bulbasaur_base_stat["defense"])
+        self.assertEqual(stat["special-attack"], bulbasaur_base_stat["special-attack"])
+        self.assertEqual(stat["special-defense"], bulbasaur_base_stat["special-defense"])
+        self.assertEqual(stat["speed"], bulbasaur_base_stat["speed"])
+
 
     def test_parse(self):
         pokemon_data_json = json.loads(Pokemon_data)

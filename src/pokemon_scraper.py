@@ -31,7 +31,10 @@ class PokemonScraper:
         species_url = "https://pokeapi.co/api/v2/pokemon-species"
 
         only_pokemon_data = 0
+        only_stat_data = 2
         pokemon_tuple = PokemonDownloader.download_pokemon(pokemon_url, species_url, number)
         pokemon_json = pokemon_tuple[only_pokemon_data]
-        sql_data = PokemonWriter.convert_pokemon_json_to_sql(pokemon_json)
+        pokemon_stats_json = pokemon_tuple[only_stat_data]
+
+        sql_data = PokemonWriter.convert_pokemon_json_to_sql(pokemon_json,pokemon_stats_json)
         return sql_data

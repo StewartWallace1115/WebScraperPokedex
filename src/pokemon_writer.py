@@ -8,7 +8,7 @@ class PokemonWriter:
     """
 
     @classmethod
-    def convert_pokemon_json_to_sql(cls, pokemon_json):
+    def convert_pokemon_json_to_sql(cls, pokemon_json, pokemon_stat_json):
         """
         Create SQL file from pokemon data
         """
@@ -19,12 +19,29 @@ class PokemonWriter:
                         ("secondary_type", "varchar")]
         pokemon_columns = ["name", "id","height", "weight", "ability", "species",  \
                           "primary_type", "secondary_type"]
-        table_name = "Pokemon"
-        primary_key = "name"
-        sql_pokemon_creation = cls.create_table(table_name, pokemon_columns_types)
+                          
+        table_name_pokemon = "Pokemon"
+        primary_key_pokemon = "name"
+
+        stats_columns_types = [("name", "varchar"),("hp", "int"), ("attack", "int"),\
+                             ("defense", "int"), ("special-attack", "int"), \
+                             ("special-defense", "int"),("speed", "int")]
+        stats_columns = ["name", "hp","attack", "defense", "special-attack", "special-defense","speed"]
+                  
+        table_name_stats= "Stats"
+        primary_key_stats = "name"
+
+        sql_pokemon_creation = cls.init_table(table_name_pokemon, primary_key_pokemon, pokemon_columns_types, pokemon_columns, pokemon_json)
+        sql_pokemon_creation = sql_pokemon_creation + cls.init_table(table_name_stats, primary_key_stats, stats_columns_types, stats_columns, pokemon_stat_json)
+
+        return sql_pokemon_creation
+
+    @classmethod
+    def init_table(cls, table_name,primary_key, column_types, columns_name, pokemon_json):
+        sql_pokemon_creation = cls.create_table(table_name, column_types)
         sql_pokemon_creation = cls.create_primary_key(primary_key,table_name,sql_pokemon_creation)
         sql_pokemon_creation = cls.populate_table(pokemon_json, table_name,
-                                sql_pokemon_creation, pokemon_columns)
+                                sql_pokemon_creation, columns_name)
         return sql_pokemon_creation
 
     @classmethod
@@ -105,7 +122,7 @@ class PokemonWriter:
         value_string = cls.remove_last_comma(value_string, True)
 
         sql_creation_string = sql_creation_string + "INSERT INTO "+ table_name +\
-                             " VALUES " + value_string + ");"
+                             " VALUES " + value_string + ");\n"
 
         return sql_creation_string
 
