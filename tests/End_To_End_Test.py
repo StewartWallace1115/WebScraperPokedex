@@ -15,4 +15,5 @@ class Pokemon_Scraper_Test(unittest.TestCase):
         results = filecmp.cmp("tests/test.sql","tests/pokemon.sql",False)
 
         self.assertTrue(True)
+        # TODO:  Run locally until fix with circleci server
         #self.assertTrue(results)
