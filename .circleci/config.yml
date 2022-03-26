@@ -39,7 +39,7 @@ jobs:
       - run: python3 --version
       - run: python3 -m pylint --fail-under=7 src
       - run: ls
-      - run: ls/tests
+      - run: ls /tests
       - run: python3 -m coverage run -m unittest discover tests "*_Test.py"
       - run: python3 -m coverage report --omit=tests/* --fail-under=80
       - run: python3 -m coverage xml --omit=tests/* --fail-under=80  
