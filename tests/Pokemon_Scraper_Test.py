@@ -20,3 +20,4 @@ class Pokemon_Scraper_Test(unittest.TestCase):
 
         
         self.assertEqual(sql_data, expected_result)
+            
