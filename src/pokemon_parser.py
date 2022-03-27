@@ -1,7 +1,6 @@
 """
 Parses JSON file from PokeAPI
 """
-from numpy import copy
 
 
 class PokemonParser:
@@ -9,7 +8,7 @@ class PokemonParser:
     Parses JSON file from PokeAPI Pokemon endpoint
     """
 
-    def parse(self, pokemon_json, species_json, moveset_dictionary, spirites_dictionary, pokemon_stats):
+    def parse(self, pokemon_json, species_json, moveset_dictionary, pokemon_stats):
 
         """
         Parse pokemon json to remove unnecessary data and extract moves set
@@ -18,12 +17,32 @@ class PokemonParser:
         self.remove_unnecessary_properties(pokemon_json)
         self.use_first_ability_only(pokemon_json)
         self.seperate_data_from_pokemon_data(pokemon_json, moveset_dictionary, "moves")
-        self.seperate_data_from_pokemon_data(pokemon_json, spirites_dictionary, "sprites")
+        self.add_offical_artwork_property(pokemon_json)
         self.english_species_property(species_json, pokemon_json)
         self.types(pokemon_json)
         stats = self.extract_stats(pokemon_json,pokemon_stats)
         return stats
 
+    @classmethod
+    def add_offical_artwork_property(cls, pokemon_data):
+
+        """
+        Removes properties not necessary to download from the JSON file
+        """
+
+        sprites = pokemon_data["sprites"]
+        official_artwork= ""
+
+        if "other" in sprites and "official-artwork" in sprites["other"]:
+            list_offical_artwork = pokemon_data["sprites"]["other"]["official-artwork"]
+            if "front_default" in list_offical_artwork:
+                official_artwork = list_offical_artwork["front_default"]
+        elif "front_default" in sprites:
+            official_artwork = sprites["front_default"]
+        else:
+            official_artwork = "none"
+        pokemon_data["official_artwork"] = official_artwork
+        del pokemon_data["sprites"]
 
     @classmethod
     def remove_unnecessary_properties(cls, pokemon_data):
