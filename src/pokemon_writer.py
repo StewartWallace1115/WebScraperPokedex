@@ -8,6 +8,23 @@ class PokemonWriter:
     """
 
     @classmethod
+    def convert_pokemon_to_nosql(cls, moveset, pokemon_json):
+    
+        cls.convert_moveset_to_nosql(pokemon_json,moveset)
+
+    @classmethod
+    def convert_moveset_to_nosql(cls,pokemon_json, moveset):
+        name = pokemon_json['name']
+        pokemon = moveset[name]
+        array_moveset = []
+        simplified_moveset = {}
+        for element in pokemon:
+            array_moveset.append(element['move']['name'])
+        
+        simplified_moveset[name] = array_moveset
+        return simplified_moveset
+
+    @classmethod
     def convert_pokemon_json_to_sql(cls, pokemon_json, pokemon_stat_json):
         """
         Create SQL file from pokemon data

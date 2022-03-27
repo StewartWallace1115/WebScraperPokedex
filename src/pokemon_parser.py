@@ -21,6 +21,7 @@ class PokemonParser:
         self.english_species_property(species_json, pokemon_json)
         self.types(pokemon_json)
         stats = self.extract_stats(pokemon_json,pokemon_stats)
+        
         return stats
 
     @classmethod
