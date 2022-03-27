@@ -16,9 +16,9 @@ class PokemonWriter:
         pokemon_columns_types = [("name", "varchar"),("id", "int"),  ("height", "varchar"),\
                         ("weight", "int"),("ability", "varchar"),("species", "varchar"),\
                         ("primary_type", "varchar"),\
-                        ("secondary_type", "varchar")]
+                        ("secondary_type", "varchar"), ("official_artwork", "varchar")]
         pokemon_columns = ["name", "id","height", "weight", "ability", "species",  \
-                          "primary_type", "secondary_type"]
+                          "primary_type", "secondary_type", "official_artwork"]
                           
         table_name_pokemon = "Pokemon"
         primary_key_pokemon = "name"
@@ -37,7 +37,7 @@ class PokemonWriter:
         return sql_pokemon_creation
 
     @classmethod
-    def init_table(cls, table_name,primary_key, column_types, columns_name, pokemon_json):
+    def init_table(cls, table_name, primary_key, column_types, columns_name, pokemon_json):
         sql_pokemon_creation = cls.create_table(table_name, column_types)
         sql_pokemon_creation = cls.create_primary_key(primary_key,table_name,sql_pokemon_creation)
         sql_pokemon_creation = cls.populate_table(pokemon_json, table_name,
