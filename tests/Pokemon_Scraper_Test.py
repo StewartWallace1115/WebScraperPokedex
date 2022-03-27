@@ -1,3 +1,4 @@
+from operator import truediv
 import unittest
 
 from src.pokemon_scraper import PokemonScraper
@@ -6,7 +7,6 @@ class Pokemon_Scraper_Test(unittest.TestCase):
 
     def test_upper(self):
         self.assertEqual('foo'.upper(), 'FOO')
-
 
         
     def test_jsonToSQL(self):
@@ -20,4 +20,5 @@ class Pokemon_Scraper_Test(unittest.TestCase):
 
         
         self.assertEqual(sql_data, expected_result)
-            
+
+ 
