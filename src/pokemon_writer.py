@@ -7,6 +7,8 @@ class PokemonWriter:
     Downloads JSON file from Poke API endpoint
     """
 
+
+
     @classmethod
     def convert_pokemon_to_nosql(cls, moveset, pokemon_json):
     
@@ -57,7 +59,13 @@ class PokemonWriter:
     def init_table(cls, table_name, primary_key, column_types, columns_name, pokemon_json):
         sql_pokemon_creation = cls.create_table(table_name, column_types)
         sql_pokemon_creation = cls.create_primary_key(primary_key,table_name,sql_pokemon_creation)
-        sql_pokemon_creation = cls.populate_table(pokemon_json, table_name,
+        
+        if isinstance(pokemon_json, list):
+            for pokemon in pokemon_json:
+                sql_pokemon_creation = cls.populate_table(pokemon, table_name,
+                                sql_pokemon_creation, columns_name)      
+        else:
+            sql_pokemon_creation = sql_pokemon_creation + cls.populate_table(pokemon_json, table_name,
                                 sql_pokemon_creation, columns_name)
         return sql_pokemon_creation
 
@@ -138,7 +146,7 @@ class PokemonWriter:
 
         value_string = cls.remove_last_comma(value_string, True)
 
-        sql_creation_string = sql_creation_string + "INSERT INTO "+ table_name +\
+        sql_creation_string =  "INSERT INTO "+ table_name +\
                              " VALUES " + value_string + ");\n"
 
         return sql_creation_string
