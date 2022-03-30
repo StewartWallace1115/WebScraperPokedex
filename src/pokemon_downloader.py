@@ -11,14 +11,6 @@ class PokemonDownloader:
     """
 
     @classmethod
-    def download_all_pokemon(cls, moveset_dictionary):
-
-        """
-        Parse pokemon json to remove unnecessary data and extract moves set
-        """
-        return moveset_dictionary
-
-    @classmethod
     def download_pokemon(cls, pokemon_url, species_url, number):
 
         """

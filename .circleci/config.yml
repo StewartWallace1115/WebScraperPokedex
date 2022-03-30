@@ -41,8 +41,8 @@ jobs:
       - run: ls
       - run: python3 -m coverage run -m unittest discover tests "*_Test.py"
       - run: ls tests
-      - run: python3 -m coverage report --omit=tests/* --fail-under=80
-      - run: python3 -m coverage xml --omit=tests/* --fail-under=80  
+      - run: python3 -m coverage report --omit=tests/* --fail-under=75
+      - run: python3 -m coverage xml --omit=tests/* --fail-under=75  
 
 
 # Invoke jobs via workflows

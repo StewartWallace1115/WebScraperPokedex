@@ -15623,17 +15623,9 @@ class Pokemon_Downloader_Test(unittest.TestCase):
         expected_result = "CREATE TABLE Pokemon (\tname varchar,\n\tid int,\n\theight varchar,\n\tweight int,\n\tability varchar,\n\tspecies varchar,\n\tprimary_type varchar,\n\tsecondary_type varchar,\n\toffical_artwork varchar\n);\n"
         self.assertEquals(expected_result, pokemon_sql)
     
-    def test_create_primary_keys(self):
-        pokemon_writer = PokemonWriter()
-        primary_keys = [("Pokemon","name"),("Moves", "name")]
-        pokemon_sql = pokemon_writer.create_primary_keys(primary_keys,"")
-
-        expected_result = "ALTER TABLE Pokemon ADD PRIMARY KEY (name);\nALTER TABLE Moves ADD PRIMARY KEY (name);\n"
-        self.assertEquals(expected_result, pokemon_sql)
-    
     def test_create_primary_key(self):
         pokemon_writer = PokemonWriter()
-        pokemon_sql = pokemon_writer.create_primary_key("name", "Pokemon","")
+        pokemon_sql = pokemon_writer.create_primary_key( "Pokemon", "name")
 
         expected_result = "ALTER TABLE Pokemon ADD PRIMARY KEY (name);\n"
         self.assertEquals(expected_result, pokemon_sql)
@@ -15652,23 +15644,19 @@ class Pokemon_Downloader_Test(unittest.TestCase):
         pokemon_data_json = json.loads(Parsed_pokemon_data)
         pokemon_columns = ["name", "id","height", "weight", "ability", "species",  \
                           "primary_type", "secondary_type", "official_artwork"]
-        pokemon_sql = pokemon_writer.populate_table(pokemon_data_json,"Pokemon", "", pokemon_columns)
+        pokemon_sql = pokemon_writer.populate_table(pokemon_data_json,"Pokemon", pokemon_columns)
 
         expected_result = "INSERT INTO Pokemon VALUES (\'clefairy\', 35, 6, 75, \'friend-guard\', \'Fairy Pokémon\', \'fairy\', \'none\', \'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/35.png\');\n"
 
         self.assertEquals(expected_result, pokemon_sql)
     
-    def test_convert_pokemon_json_to_sql(self):
+    def test_create_pokemon_tables(self):
         pokemon_writer = PokemonWriter()
-
-        pokemon_data_json = json.loads(Parsed_pokemon_data)
-        stat_data_json = json.loads(Parsed_pokemon_stat)
-        pokemon_sql = pokemon_writer.convert_pokemon_json_to_sql(pokemon_data_json, stat_data_json)
+        pokemon_sql = pokemon_writer.create_pokemon_tables()
         expected_creation = "CREATE TABLE Pokemon (\tname varchar,\n\tid int,\n\theight varchar,\n\tweight int,\n\tability varchar,\n\tspecies varchar,\n\tprimary_type varchar,\n\tsecondary_type varchar,\n\tofficial_artwork varchar\n);\n" 
         expected_alter = "ALTER TABLE Pokemon ADD PRIMARY KEY (name);\n"
-        expected_populate = "INSERT INTO Pokemon VALUES (\'clefairy\', 35, 6, 75, \'friend-guard\', \'Fairy Pokémon\', \'fairy\', \'none\', \'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/35.png\');\n"
-        expected_moves = """CREATE TABLE Stats (\tname varchar,\n\thp int,\n\tattack int,\n\tdefense int,\n\tspecial-attack int,\n\tspecial-defense int,\n\tspeed int\n);\nALTER TABLE Stats ADD PRIMARY KEY (name);\nINSERT INTO Stats VALUES ('clefairy', 75, 45, 45, 60, 45, 35);\n"""
-        expected_result =expected_creation + expected_alter + expected_populate + expected_moves
+        expected_moves = """CREATE TABLE Stats (\tname varchar,\n\thp int,\n\tattack int,\n\tdefense int,\n\tspecial-attack int,\n\tspecial-defense int,\n\tspeed int\n);\nALTER TABLE Stats ADD PRIMARY KEY (name);\n"""
+        expected_result =expected_creation + expected_alter + expected_moves
 
         self.assertEquals(expected_result, pokemon_sql)
 
@@ -15684,6 +15672,20 @@ class Pokemon_Downloader_Test(unittest.TestCase):
         self.assertTrue("clefairy" in moveset_array)
         self.assertEquals(moveset_array['clefairy'][0], 'pound')
         self.assertEquals(moveset_array['clefairy'][145], 'dual-wingbeat')
+
+    def test_createAndPopulateTables(self):
+        pokemon_writer = PokemonWriter()
+        pokemon_data_json = json.loads(Parsed_pokemon_data)
+        stat_data_json = json.loads(Parsed_pokemon_stat)
+
+        pokemon_sql = pokemon_writer.create_pokemon_tables()
+        pokemon_sql = pokemon_sql + pokemon_writer.populate_pokemon_tables(stat_data_json, pokemon_data_json)
+       
+        expected_result = "CREATE TABLE Pokemon (\tname varchar,\n\tid int,\n\theight varchar,\n\tweight int,\n\tability varchar,\n\tspecies varchar,\n\tprimary_type varchar,\n\tsecondary_type varchar,\n\tofficial_artwork varchar\n);\nALTER TABLE Pokemon ADD PRIMARY KEY (name);\nCREATE TABLE Stats (\tname varchar,\n\thp int,\n\tattack int,\n\tdefense int,\n\tspecial-attack int,\n\tspecial-defense int,\n\tspeed int\n);\nALTER TABLE Stats ADD PRIMARY KEY (name);\nINSERT INTO Pokemon VALUES ('clefairy', 35, 6, 75, 'friend-guard', 'Fairy Pokémon', 'fairy', 'none', 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/35.png');\nINSERT INTO Stats VALUES ('clefairy', 75, 45, 45, 60, 45, 35);\n"
+
+        self.assertEquals(expected_result, pokemon_sql)
+
+        self.assertEquals(expected_result, pokemon_sql)
 
      
      

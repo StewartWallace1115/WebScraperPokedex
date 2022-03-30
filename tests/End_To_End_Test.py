@@ -1,37 +1,36 @@
+from argparse import ArgumentParser
 import filecmp
+import subprocess
 import unittest
+import program
 
 from src.pokemon_scraper import PokemonScraper
 
-class Pokemon_Scraper_Test(unittest.TestCase):
+class End_To_End_Test(unittest.TestCase):
 
-    def test_upper(self):
-        self.assertEqual('foo'.upper(), 'FOO')
-
-
-        
-    def test_jsonToLocalSQLOnlyOne(self):
-        sql_data = PokemonScraper.json_to_local_sql_one_pokemon("tests/","pokemon.sql",35)
-        results = filecmp.cmp("tests/test.sql","tests/pokemon.sql",False)
-
-        self.assertTrue(True)
-        # TODO:  Run locally until fix with circleci server
-        #self.assertTrue(results)
-
+    @unittest.skip("Run locally")
     def test_json_to_local_files_one_pokemon(self):
-        sql_data = PokemonScraper.json_to_local_files_one_pokemon("tests/","pokemon.sql","pokemon.json",35)
+        #Depending on file system encoding, dev might have to generate test case first then test code.
 
-        expected_creation = "CREATE TABLE Pokemon (\tname varchar,\n\tid int,\n\theight varchar,\n\tweight int,\n\tability varchar,\n\tspecies varchar,\n\tprimary_type varchar,\n\tsecondary_type varchar,\n\tofficial_artwork varchar\n);\n"
-        expected_alter = "ALTER TABLE Pokemon ADD PRIMARY KEY (name);\n"
-        expected_populate = "INSERT INTO Pokemon VALUES (\'clefairy\', 35, 6, 75, \'cute-charm\', \'Fairy Pokémon\', \'fairy\', \'none\', \'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/35.png\');\n"
-        expected_moves = """CREATE TABLE Stats (\tname varchar,\n\thp int,\n\tattack int,\n\tdefense int,\n\tspecial-attack int,\n\tspecial-defense int,\n\tspeed int\n);\nALTER TABLE Stats ADD PRIMARY KEY (name);\nINSERT INTO Stats VALUES ('clefairy', 70, 45, 48, 60, 65, 35);\n"""
-        expected_result =expected_creation + expected_alter + expected_populate + expected_moves       
-        #self.assertEqual(sql_data, expected_result)
+        args = ['--path', 'tests/', '--sql-name', 'pokemon.sql', '--no-sql-name', 'pokemon.json', '--number', '35']
+        program.setup_cmd_line(args)
+
+        sql_compare = filecmp.cmp("tests/pokemon.sql", "tests/test.sql", False)
+        nosql_compare = filecmp.cmp("tests/pokemon.json", "tests/test.json", False)
         
+        self.assertTrue(sql_compare)
+        self.assertTrue(nosql_compare)
+    
     @unittest.skip("Run locally")
     def test_json_to_local_files_first_gen(self):
-        sql_data = PokemonScraper.json_to_local_files_first_gen("tests/","pokemon.sql","pokemon.json")
+        args = ['--path', 'tests/', '--sql-name', 'pokemon.sql', '--no-sql-name', 'pokemon.json']
+        program.setup_cmd_line(args)
 
+        sql_compare = filecmp.cmp("tests/pokemon.sql", "tests/test.sql", False)
+        nosql_compare = filecmp.cmp("tests/pokemon.json", "tests/test.json", False)
+        
+        self.assertTrue(sql_compare)
+        self.assertTrue(nosql_compare)
 
         self.assertTrue(True)
             

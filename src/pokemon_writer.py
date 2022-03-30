@@ -7,27 +7,44 @@ class PokemonWriter:
     Downloads JSON file from Poke API endpoint
     """
 
-
-
-    @classmethod
-    def convert_pokemon_to_nosql(cls, moveset, pokemon_json):
-    
-        cls.convert_moveset_to_nosql(pokemon_json,moveset)
-
     @classmethod
     def convert_moveset_to_nosql(cls,pokemon_json, moveset):
+        """
+        Convert moveset to nosql (json)
+        """
+
         name = pokemon_json['name']
         pokemon = moveset[name]
         array_moveset = []
         simplified_moveset = {}
         for element in pokemon:
             array_moveset.append(element['move']['name'])
-        
+
         simplified_moveset[name] = array_moveset
         return simplified_moveset
 
     @classmethod
-    def convert_pokemon_json_to_sql(cls, pokemon_json, pokemon_stat_json):
+    def populate_pokemon_tables(cls,stat_json, pokemon_json):
+        """
+        Create SQL file from pokemon data
+        """
+
+        pokemon_columns = ["name", "id","height", "weight", "ability", "species",  \
+                          "primary_type", "secondary_type", "official_artwork"]
+        stats_columns = ["name", "hp","attack", "defense", "special-attack", "special-defense",\
+                        "speed"]
+
+        table_name_pokemon = "Pokemon"
+        table_name_stats= "Stats"
+
+        sql_pokemon_creation = cls.populate_table(pokemon_json, table_name_pokemon, \
+                                pokemon_columns)
+        sql_stats_creation = cls.populate_table(stat_json, table_name_stats, stats_columns)
+
+        return sql_pokemon_creation + sql_stats_creation
+
+    @classmethod
+    def create_pokemon_tables(cls):
         """
         Create SQL file from pokemon data
         """
@@ -36,38 +53,32 @@ class PokemonWriter:
                         ("weight", "int"),("ability", "varchar"),("species", "varchar"),\
                         ("primary_type", "varchar"),\
                         ("secondary_type", "varchar"), ("official_artwork", "varchar")]
-        pokemon_columns = ["name", "id","height", "weight", "ability", "species",  \
-                          "primary_type", "secondary_type", "official_artwork"]
-                          
-        table_name_pokemon = "Pokemon"
-        primary_key_pokemon = "name"
 
         stats_columns_types = [("name", "varchar"),("hp", "int"), ("attack", "int"),\
                              ("defense", "int"), ("special-attack", "int"), \
                              ("special-defense", "int"),("speed", "int")]
-        stats_columns = ["name", "hp","attack", "defense", "special-attack", "special-defense","speed"]
-                  
+
         table_name_stats= "Stats"
         primary_key_stats = "name"
+        table_name_pokemon = "Pokemon"
+        primary_key_pokemon = "name"
 
-        sql_pokemon_creation = cls.init_table(table_name_pokemon, primary_key_pokemon, pokemon_columns_types, pokemon_columns, pokemon_json)
-        sql_pokemon_creation = sql_pokemon_creation + cls.init_table(table_name_stats, primary_key_stats, stats_columns_types, stats_columns, pokemon_stat_json)
+        sql_pokemon_creation = cls.init_table(table_name_pokemon, primary_key_pokemon, \
+                                pokemon_columns_types)
+        sql_stats_creation = cls.init_table(table_name_stats, primary_key_stats, \
+                            stats_columns_types)
 
-        return sql_pokemon_creation
+        return sql_pokemon_creation + sql_stats_creation
 
     @classmethod
-    def init_table(cls, table_name, primary_key, column_types, columns_name, pokemon_json):
+    def init_table(cls, table_name, primary_key, column_types):
+        """
+        Create tables and primary key for table
+        """
+
         sql_pokemon_creation = cls.create_table(table_name, column_types)
-        sql_pokemon_creation = cls.create_primary_key(primary_key,table_name,sql_pokemon_creation)
-        
-        if isinstance(pokemon_json, list):
-            for pokemon in pokemon_json:
-                sql_pokemon_creation = cls.populate_table(pokemon, table_name,
-                                sql_pokemon_creation, columns_name)      
-        else:
-            sql_pokemon_creation = sql_pokemon_creation + cls.populate_table(pokemon_json, table_name,
-                                sql_pokemon_creation, columns_name)
-        return sql_pokemon_creation
+        sql_primary_key_creation = cls.create_primary_key(table_name, primary_key)
+        return sql_pokemon_creation + sql_primary_key_creation
 
     @classmethod
     def create_table(cls, table_name, columns):
@@ -86,31 +97,19 @@ class PokemonWriter:
         sql_creation = cls.remove_last_comma(sql_creation, False)
 
         sql_creation = sql_creation + ");\n"
-
         return sql_creation
 
     @classmethod
-    def create_primary_keys(cls,keys_tables, sql_creation_string):
+    def create_primary_key(cls, table_name, primary_key):
         """
         Create set of SQL primary keys using Alter table method.
         """
 
-        for key_table in keys_tables:
-            sql_creation_string = sql_creation_string + "ALTER TABLE " + key_table[0] +\
-                             " ADD PRIMARY KEY (" + key_table[1] + ");\n"
+        sql_creation_string = "ALTER TABLE " + table_name +" ADD PRIMARY KEY "\
+                                "(" + primary_key + ");\n"
 
         return sql_creation_string
 
-    @classmethod
-    def create_primary_key(cls, primary_key, table_name, sql_creation_string):
-        """
-        Create single primary key
-        """
-
-        sql_creation_string = sql_creation_string + "ALTER TABLE " + table_name + \
-                             " ADD PRIMARY KEY (" + primary_key + ");\n"
-
-        return sql_creation_string
 
     @classmethod
     def create_relationships(cls, keys_tables, sql_creation_string):
@@ -126,7 +125,7 @@ class PokemonWriter:
         return sql_creation_string
 
     @classmethod
-    def populate_table(cls, pokemon_json, table_name, sql_creation_string, columns):
+    def populate_table(cls, pokemon_json, table_name, columns):
         """
         Populate SQL table using values and keys
         """
@@ -134,8 +133,8 @@ class PokemonWriter:
         value_string = "("
 
         for element in columns:
-
             value = pokemon_json[element]
+
             if not isinstance(value, str):
                 value = str(value)
             else:
@@ -143,12 +142,8 @@ class PokemonWriter:
 
             value_string = value_string + value +", "
 
-
         value_string = cls.remove_last_comma(value_string, True)
-
-        sql_creation_string =  "INSERT INTO "+ table_name +\
-                             " VALUES " + value_string + ");\n"
-
+        sql_creation_string =  "INSERT INTO "+ table_name + " VALUES " + value_string + ");\n"
         return sql_creation_string
 
     @classmethod
