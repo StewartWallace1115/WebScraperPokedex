@@ -21,6 +21,7 @@ class End_To_End_Test(unittest.TestCase):
         self.assertTrue(sql_compare)
         self.assertTrue(nosql_compare)
     
+    @unittest.skip("Run locally")
     def test_json_to_local_files_first_gen(self):
         args = ['--path', 'tests/', '--sql-name', 'pokemon.sql', '--no-sql-name', 'pokemon.json']
         program.setup_cmd_line(args)
