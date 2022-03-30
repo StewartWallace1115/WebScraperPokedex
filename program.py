@@ -1,5 +1,5 @@
 '''
-Entry point to the PokemonScraper program. Handles CMD line args.
+Entry point to the  PokemonScraper program. Handles CMD line args.
 '''
 
 import argparse
