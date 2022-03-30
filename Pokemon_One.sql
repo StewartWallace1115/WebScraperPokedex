@@ -18,5 +18,5 @@ CREATE TABLE Stats (	name varchar,
 	speed int
 );
 ALTER TABLE Stats ADD PRIMARY KEY (name);
-INSERT INTO Pokemon VALUES ('bulbasaur', 1, 7, 69, 'overgrow', 'Seed Pokémon', 'grass', 'poison', 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png');
-INSERT INTO Stats VALUES ('bulbasaur', 45, 49, 49, 65, 65, 45);
+INSERT INTO Pokemon VALUES ('clefairy', 35, 6, 75, 'cute-charm', 'Fairy Pokémon', 'fairy', 'none', 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/35.png');
+INSERT INTO Stats VALUES ('clefairy', 70, 45, 48, 60, 65, 35);

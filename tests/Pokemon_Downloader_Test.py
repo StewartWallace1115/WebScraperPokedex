@@ -5,9 +5,6 @@ from src.pokemon_downloader import PokemonDownloader
 
 class Pokemon_Downloader_Test(unittest.TestCase):
 
-    def test_upper(self):
-        self.assertEqual('foo'.upper(), 'FOO')
-    
     def test_download_parse_pokemon(self):
         pokemon_url = "https://pokeapi.co/api/v2/pokemon"
         species_url = "https://pokeapi.co/api/v2/pokemon-species"
